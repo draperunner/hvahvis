@@ -12,25 +12,34 @@ export default function Home() {
 
     const createGame = () => {
         if (!user) return
-        firebase.firestore().collection('games').add({
-            host: {
-                name: user.displayName,
-                uid: user.uid
-            },
-            participants: [{
-                name: user.displayName,
-                uid: user.uid
-            }],
-            questions: []
-        }).then((docRef) => {
-            history.push(`/g/${docRef.id}`)
-        })
+        firebase
+            .firestore()
+            .collection('games')
+            .add({
+                host: {
+                    name: user.displayName,
+                    uid: user.uid,
+                },
+                participants: [
+                    {
+                        name: user.displayName,
+                        uid: user.uid,
+                    },
+                ],
+                questions: [],
+            })
+            .then((docRef) => {
+                history.push(`/g/${docRef.id}`)
+            })
     }
 
     return (
         <div>
             <h1>Hva ville du gjort hvis ...</h1>
-            <p>Still et spørsmål. Svar på det. Bland svar og spørsmål med vennene dine. Le.</p>
+            <p>
+                Still et spørsmål. Svar på det. Bland svar og spørsmål med
+                vennene dine. Le.
+            </p>
             <button onClick={createGame}>Nytt spill</button>
         </div>
     )
