@@ -3,7 +3,6 @@ import firebase from "firebase/app";
 
 import "firebase/analytics";
 import "firebase/auth";
-import { randomName } from "./utils";
 
 const firebaseConfig = {
     apiKey: "AIzaSyDPW137C0olt0R-bkjZVrNQyTnmsDbZKH8",
@@ -20,37 +19,18 @@ firebase.initializeApp(firebaseConfig);
 
 export function useAnonymousLogin() {
   const [user, setUser] = useState<firebase.User | null>();
-  const [token, setToken] = useState<string | null>();
 
   useEffect(() => {
-    const unsubscribe = firebase.auth().onAuthStateChanged((user) => {
-      if (!user) {
-        setUser(null);
-        setToken(null);
-        firebase.auth().signInAnonymously().catch(console.error);
-        return;
-      }
+    return firebase.auth().onAuthStateChanged((newUser) => {
+        setUser(newUser);
 
-      setUser(user);
-
-      user.getIdToken().then(setToken).catch(console.error);
+        if (!newUser) {
+            firebase.auth().signInAnonymously().catch(console.error);
+        }
     });
-
-    return unsubscribe;
   }, []);
 
-  useEffect(() => {
-      if (user && !user.displayName) {
-          firebase.auth().currentUser?.updateProfile({
-              displayName: randomName()
-          })
-      }
-  })
-
-  return {
-    user,
-    token,
-  };
+  return user
 }
 
 export const UserContext = createContext<firebase.User | null>(null);
