@@ -172,35 +172,36 @@ export default function Game() {
                 </div>
             ))}
 
-            <form onSubmit={addQuestion}>
-                <label>
-                    Spørsmål
-                    <input
-                        placeholder="Hva ville du gjort hvis ..."
-                        value={question}
-                        onChange={(e) => setQuestion(e.currentTarget.value)}
-                    />
-                </label>
-                <label>
-                    Svar
-                    <input
-                        placeholder="Jeg ville ha ..."
-                        value={answer}
-                        onChange={(e) => setAnswer(e.currentTarget.value)}
-                    />
-                </label>
-                <button
-                    disabled={
-                        !user || questions.length >= NUM_QUESTIONS_PER_PLAYER
-                    }
-                >
-                    Legg til spørsmål
-                </button>
-            </form>
-
-            {questions.length >= NUM_QUESTIONS_PER_PLAYER ? (
+            {questions.length < NUM_QUESTIONS_PER_PLAYER ? (
+                <form onSubmit={addQuestion}>
+                    <label>
+                        Spørsmål
+                        <input
+                            placeholder="Hva ville du gjort hvis ..."
+                            value={question}
+                            onChange={(e) => setQuestion(e.currentTarget.value)}
+                        />
+                    </label>
+                    <label>
+                        Svar
+                        <input
+                            placeholder="Jeg ville ha ..."
+                            value={answer}
+                            onChange={(e) => setAnswer(e.currentTarget.value)}
+                        />
+                    </label>
+                    <button
+                        disabled={
+                            !user ||
+                            questions.length >= NUM_QUESTIONS_PER_PLAYER
+                        }
+                    >
+                        Legg til spørsmål
+                    </button>
+                </form>
+            ) : (
                 <h2>Du er ferdig med dine spørsmål. Bra!</h2>
-            ) : null}
+            )}
 
             {game ? (
                 <p>{`${Math.floor(
@@ -209,7 +210,7 @@ export default function Game() {
             ) : null}
 
             {isHost ? (
-                <button onClick={setGameDone}>Reveal answers!</button>
+                <button onClick={setGameDone}>Vis svarene!</button>
             ) : null}
         </div>
     )
