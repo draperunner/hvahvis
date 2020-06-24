@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react'
+import { useParams, Link } from 'react-router-dom'
 
 import firebase from 'firebase/app'
 import 'firebase/firestore'
-import { useParams } from 'react-router-dom'
 
 import { useUser } from '../../auth'
 
@@ -56,7 +56,8 @@ export default function Game() {
     const user = useUser()
     const { id } = useParams()
 
-    const [game, setGame] = useState<Game>()
+    const [game, setGame] = useState<Game | undefined>()
+    const [loading, setLoading] = useState<boolean>(true)
 
     const [questions, setQuestions] = useState<Question[]>([])
 
@@ -75,6 +76,10 @@ export default function Game() {
             .collection('games')
             .doc(id)
             .onSnapshot((doc) => {
+                setLoading(false)
+                if (!doc.exists) {
+                    return
+                }
                 const gameData = doc.data() as Game
 
                 if (!gameData) {
@@ -86,12 +91,12 @@ export default function Game() {
     }, [id, user])
 
     useEffect(() => {
-        if (!game || !user || questions.length > 0) return
+        if (!game || !user) return
 
         setQuestions(
             game.questions.filter(({ author }) => author.uid === user.uid),
         )
-    }, [id, user, questions, game])
+    }, [id, user, game])
 
     useEffect(() => {
         if (!id || !user || !game) return
@@ -151,6 +156,22 @@ export default function Game() {
             status: 'OVER',
             scrambledQuestions,
         })
+    }
+
+    if (loading) {
+        return null
+    }
+
+    if (!game) {
+        return (
+            <div>
+                <h1>Fant ikke spillet!</h1>
+                <p>Brukte du feil pin?</p>
+                <div>
+                    <Link to="/">Gå til framsida.</Link>
+                </div>
+            </div>
+        )
     }
 
     if (game?.status === 'OVER') {
