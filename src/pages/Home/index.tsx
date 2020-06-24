@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 
 import firebase from 'firebase/app'
 import 'firebase/firestore'
@@ -9,6 +9,12 @@ import { useUser } from '../../auth'
 export default function Home() {
     const user = useUser()
     const history = useHistory()
+
+    const [pin, setPin] = useState<string>('')
+
+    const goToGame = (pin: string) => {
+        history.push(`/${pin}`)
+    }
 
     const createGame = () => {
         if (!user) return
@@ -32,9 +38,7 @@ export default function Home() {
                 ],
                 questions: [],
             })
-            .then(() => {
-                history.push(`/${id}`)
-            })
+            .then(() => goToGame(id))
     }
 
     return (
@@ -44,7 +48,31 @@ export default function Home() {
                 Still et spørsmål. Svar på det. Bland svar og spørsmål med
                 vennene dine. Le.
             </p>
-            <button onClick={createGame}>Nytt spill</button>
+
+            <form
+                onSubmit={(e) => {
+                    e.preventDefault()
+                    goToGame(pin)
+                }}
+            >
+                <label>
+                    Pin:
+                    <input
+                        autoFocus
+                        value={pin}
+                        onChange={(e) => setPin(e.currentTarget.value)}
+                    />
+                </label>
+                <button disabled={pin.length < 4}>Bli med i spillet</button>
+            </form>
+
+            <button
+                type="button"
+                onClick={createGame}
+                style={{ marginTop: 20 }}
+            >
+                Nytt spill
+            </button>
         </div>
     )
 }
