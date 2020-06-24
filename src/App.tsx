@@ -48,7 +48,7 @@ function App() {
             <Router>
                 <div className="app">
                     <Switch>
-                        <Route path="/g/:id">
+                        <Route path="/:id">
                             <Game />
                         </Route>
                         <Route path="/">

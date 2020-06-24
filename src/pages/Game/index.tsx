@@ -67,8 +67,6 @@ export default function Game() {
 
     const isHost = game && user && game?.host?.uid === user?.uid
 
-    console.log(game)
-
     useEffect(() => {
         if (!id || !user) return
 
@@ -178,6 +176,7 @@ export default function Game() {
     return (
         <div>
             <h1>Hva ville du gjort hvis ...</h1>
+            <h2>Pin: {id}</h2>
 
             <p>Skriv fem spørsmål og svar.</p>
             {user ? <p>{`Ditt navn er ${user.displayName}.`}</p> : null}

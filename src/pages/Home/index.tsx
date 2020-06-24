@@ -33,7 +33,7 @@ export default function Home() {
                 questions: [],
             })
             .then(() => {
-                history.push(`/g/${id}`)
+                history.push(`/${id}`)
             })
     }
 
