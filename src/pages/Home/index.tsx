@@ -37,6 +37,7 @@ export default function Home() {
                     },
                 ],
                 questions: [],
+                scrambledQuestions: null,
             })
             .then(() => goToGame(id))
     }

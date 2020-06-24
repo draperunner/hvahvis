@@ -6,7 +6,7 @@ import 'firebase/firestore'
 
 import { useUser } from '../../auth'
 
-const NUM_QUESTIONS_PER_PLAYER = 5
+const NUM_QUESTIONS_PER_PLAYER = 1
 
 interface Player {
     name: string
@@ -27,7 +27,7 @@ interface Game {
     host: Player
     participants: Player[]
     questions: Question[]
-    scrambledQuestions?: Question[]
+    scrambledQuestions: Question[] | null
 }
 
 function shuffle<T>(a: T[]): T[] {
@@ -158,6 +158,20 @@ export default function Game() {
         })
     }
 
+    const newGame = () => {
+        if (!game) return
+        return firebase
+            .firestore()
+            .collection('games')
+            .doc(id)
+            .set({
+                ...game,
+                questions: [],
+                status: 'STARTED',
+                scrambledQuestions: null,
+            })
+    }
+
     if (loading) {
         return null
     }
@@ -190,6 +204,10 @@ export default function Game() {
                         </p>
                     </div>
                 ))}
+
+                {isHost ? (
+                    <button onClick={newGame}>Start ny runde</button>
+                ) : null}
             </div>
         )
     }
@@ -199,7 +217,7 @@ export default function Game() {
             <h1>Hva ville du gjort hvis ...</h1>
             <h2>Pin: {id}</h2>
 
-            <p>Skriv fem spørsmål og svar.</p>
+            <p>Skriv spørsmål med tilhørende svar.</p>
             {user ? <p>{`Ditt navn er ${user.displayName}.`}</p> : null}
 
             {questions.map((q, index) => (
@@ -237,7 +255,7 @@ export default function Game() {
                     </button>
                 </form>
             ) : (
-                <h2>Du er ferdig med dine spørsmål. Bra!</h2>
+                <h2>Du er ferdig. Bra! Venter på resten ...</h2>
             )}
 
             {game ? (
