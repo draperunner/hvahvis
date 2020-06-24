@@ -149,8 +149,12 @@ export default function Game() {
                 {(game?.scrambledQuestions || []).map((q, index) => (
                     <div key={q.id}>
                         <b>{`Spørsmål ${index + 1}`}</b>
-                        <p>{q.question}</p>
-                        <p>{q.answer}</p>
+                        <p>
+                            {q.questionAuthor?.name}: {q.question}
+                        </p>
+                        <p>
+                            {q.answerAuthor?.name}: {q.answer}
+                        </p>
                     </div>
                 ))}
             </div>
