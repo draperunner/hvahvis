@@ -12,10 +12,14 @@ export default function Home() {
 
     const createGame = () => {
         if (!user) return
+
+        const id = `${Math.floor(Math.random() * 10000)}`.padStart(4, '0')
+
         firebase
             .firestore()
             .collection('games')
-            .add({
+            .doc(id)
+            .set({
                 host: {
                     name: user.displayName,
                     uid: user.uid,
@@ -28,8 +32,8 @@ export default function Home() {
                 ],
                 questions: [],
             })
-            .then((docRef) => {
-                history.push(`/g/${docRef.id}`)
+            .then(() => {
+                history.push(`/g/${id}`)
             })
     }
 
