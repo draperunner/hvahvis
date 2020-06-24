@@ -219,6 +219,7 @@ export default function Game() {
                             value={question}
                             ref={questionInputRef}
                             onChange={(e) => setQuestion(e.currentTarget.value)}
+                            autoFocus
                         />
                     </label>
                     <label>
@@ -230,10 +231,7 @@ export default function Game() {
                         />
                     </label>
                     <button
-                        disabled={
-                            !user ||
-                            questions.length >= NUM_QUESTIONS_PER_PLAYER
-                        }
+                        disabled={!user || !question.length || !answer.length}
                     >
                         Legg til spørsmål
                     </button>
