@@ -67,6 +67,8 @@ export default function Game() {
 
     const isHost = game && user && game?.host?.uid === user?.uid
 
+    console.log(game)
+
     useEffect(() => {
         if (!id || !user) return
 
@@ -84,6 +86,14 @@ export default function Game() {
                 setGame(gameData)
             })
     }, [id, user])
+
+    useEffect(() => {
+        if (!game || !user || questions.length > 0) return
+
+        setQuestions(
+            game.questions.filter(({ author }) => author.uid === user.uid),
+        )
+    }, [id, user, questions, game])
 
     useEffect(() => {
         if (!id || !user || !game) return
