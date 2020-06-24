@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 
 import firebase from 'firebase/app'
 import 'firebase/firestore'
@@ -60,12 +60,12 @@ export default function Game() {
 
     const [questions, setQuestions] = useState<Question[]>([])
 
-    const [question, setQuestion] = useState<string>('Hva ville du gjort hvis')
+    const [question, setQuestion] = useState<string>('Hva ville du gjort hvis ')
     const [answer, setAnswer] = useState<string>('')
 
-    const isHost = game && user && game?.host?.uid === user?.uid
+    const questionInputRef = useRef<HTMLInputElement>(null)
 
-    console.log('game', game)
+    const isHost = game && user && game?.host?.uid === user?.uid
 
     useEffect(() => {
         if (!id || !user) return
@@ -119,8 +119,12 @@ export default function Game() {
         }
 
         setQuestions((prev) => [...prev, q])
-        setQuestion('Hva ville du gjort hvis')
+        setQuestion('Hva ville du gjort hvis ')
         setAnswer('')
+
+        if (questionInputRef.current) {
+            questionInputRef.current.focus()
+        }
 
         firebase
             .firestore()
@@ -183,6 +187,7 @@ export default function Game() {
                         <input
                             placeholder="Hva ville du gjort hvis ..."
                             value={question}
+                            ref={questionInputRef}
                             onChange={(e) => setQuestion(e.currentTarget.value)}
                         />
                     </label>
