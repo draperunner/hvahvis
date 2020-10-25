@@ -30,18 +30,26 @@ interface Game {
     scrambledQuestions: Question[] | null
 }
 
-function shuffle<T>(a: T[]): T[] {
-    const b = [...a]
-    for (let i = b.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1))
-        ;[b[i], b[j]] = [b[j], b[i]]
+function pickRandom<T>(array: T[]): T {
+    return array[Math.floor(Math.random() * array.length)]
+}
+
+/**
+ * Shuffles an array and ensures no items end up on their original position
+ */
+function shuffle<T>(arr: T[]): T[] {
+    if (arr.length <= 1) {
+        return arr
     }
-    return b
+    return arr.reduce((items, item) => {
+        const available = arr.filter((q) => q !== item && !items.includes(q))
+        return [...items, pickRandom(available)]
+    }, [] as T[])
 }
 
 function scramble(qs: Question[]): Question[] {
     const questions = shuffle(qs)
-    const answers = shuffle(qs)
+    const answers = shuffle(questions)
 
     return qs.map((q, i) => ({
         ...q,
@@ -54,7 +62,7 @@ function scramble(qs: Question[]): Question[] {
 
 export default function Game() {
     const user = useUser()
-    const { id } = useParams()
+    const { id } = useParams<{ id: string }>()
 
     const [game, setGame] = useState<Game | undefined>()
     const [loading, setLoading] = useState<boolean>(true)
